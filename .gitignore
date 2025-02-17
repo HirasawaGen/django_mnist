@@ -4,4 +4,4 @@
 !weights/.gitkeep
 
 /data/*
-!data
+!data/.gitkeep
