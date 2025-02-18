@@ -19,10 +19,11 @@ from . import views, search
 
 urlpatterns = [
     path('', views.index),
-    path('cnn.html', views.cnn_html, name='mnist_html'),
-    path('gan.html', views.gan_html, name='gan_html'),
+    path('cnn', views.cnn, name='cnn'),
+    path('gan', views.gan, name='gan'),
     path("hello/", views.hello, name="hello"),
     path('search/', search.search, name='search'),
     path('search-form/', search.search_form, name='search_form'),
-    path('cnn/', views.cnn, name='cnn'),
+    path('cnn-process/', views.cnn_process, name='cnn_process'),
+    path('gan-process/', views.gan_process, name='gan_process'),
 ]

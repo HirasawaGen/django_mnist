@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,5 +7,35 @@
 </head>
 <body>
 
+<img id="image_0" style="display: block; margin: 0 auto; width: 200px; height: auto;" src=""><br>
+<img id="image_1" style="display: block; margin: 0 auto; width: 200px; height: auto;" src=""><br>
+<img id="image_2" style="display: block; margin: 0 auto; width: 200px; height: auto;" src=""><br>
+<img id="image_3" style="display: block; margin: 0 auto; width: 200px; height: auto;" src=""><br>
+<img id="image_4" style="display: block; margin: 0 auto; width: 200px; height: auto;" src=""><br>
+<img id="image_5" style="display: block; margin: 0 auto; width: 200px; height: auto;" src=""><br>
+<img id="image_6" style="display: block; margin: 0 auto; width: 200px; height: auto;" src=""><br>
+<img id="image_7" style="display: block; margin: 0 auto; width: 200px; height: auto;" src=""><br>
+<img id="image_8" style="display: block; margin: 0 auto; width: 200px; height: auto;" src=""><br>
+<img id="image_9" style="display: block; margin: 0 auto; width: 200px; height: auto;" src=""><br>
+
+<script>
+    setInterval(() => {
+        fetch('/gan-process/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        }).then(response => {
+            return response.json();
+        }).then(data => {
+            for (let i = 0; i < 10; i++) {
+                document.getElementById(`image_${i}`).src = data.fake_images[i];
+            }
+            console.log(data.pos_probs);
+        }).catch(error => {
+            console.error(error);
+        });
+    }, 1000);
+</script>
 </body>
 </html>

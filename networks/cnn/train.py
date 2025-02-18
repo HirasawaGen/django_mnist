@@ -9,11 +9,20 @@ from tqdm import tqdm
 from networks.cnn.model import CNN
 
 
-def train(model=None, device=None, batch_size=4, threshold=0.95, max_epochs=200):
+def train(
+		model=None,
+		device=None,
+		save_path=None,
+		batch_size=4,
+		threshold=0.95,
+		max_epochs=200
+):
 	if model is None:
 		model = CNN()
 	if device is None:
 		device = 'cuda' if torch.cuda.is_available() else 'cpu'
+	if save_path is None:
+		save_path = './weights/cnn.pth'
 	model.to(device)
 	train_dataset = MNIST(root='./data', train=True, download=True, transform=T.ToTensor())
 	train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
@@ -52,7 +61,7 @@ def train(model=None, device=None, batch_size=4, threshold=0.95, max_epochs=200)
 				correct += (predicted == labels).sum().item()
 		accuracy = correct / total
 		if accuracy > max_accuracy:
-			torch.save(model.state_dict(), './weights/best_model.pth')
+			torch.save(model.state_dict(), save_path)
 			max_accuracy = accuracy
 		if accuracy > threshold:
 			break

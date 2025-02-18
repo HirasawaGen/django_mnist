@@ -1,6 +1,7 @@
 import base64
 import io
 import json
+from datetime import datetime
 
 import numpy as np
 import torch
@@ -28,13 +29,21 @@ discriminator_model = Discriminator().to(device)
 discriminator_model.load_state_dict(torch.load('./weights/discriminator.pth'))
 discriminator_model.eval()
 
+seperated_generator_models = [Generator().to(device) for _ in range(10)]
+[seperated_generator_models[i].load_state_dict(torch.load(f'./weights/generator_{i}.pth')) for i in range(10)]
+[seperated_generator_models[i].eval() for i in range(10)]
+
+seperated_discriminator_models = [Discriminator().to(device) for _ in range(10)]
+[seperated_discriminator_models[i].load_state_dict(torch.load(f'./weights/discriminator_{i}.pth')) for i in range(10)]
+[seperated_discriminator_models[i].eval() for i in range(10)]
+
 
 def hello(request):
 	return HttpResponse("Hello, World!")
 
 
 @csrf_exempt
-def cnn(request):
+def cnn_process(request):
 	if request.method != 'POST':
 		return JsonResponse({'error': 'Method not allowed'}, status=405)
 	body_str = request.body.decode('utf-8')
@@ -55,17 +64,17 @@ def cnn(request):
 
 
 @csrf_exempt
-def gan(request):
+def gan_process(request):
 	if request.method != 'POST':
 		return JsonResponse({'error': 'Method not allowed'}, status=405)
 	seed = torch.randn(1, generator_model.latent_dim).to(device)
-	fake_image = generator_model(seed)
-	pos_prob = discriminator_model(fake_image)  # 图片非伪造的概率
-	fake_image = tensor2base64(fake_image)
-	pos_prob = pos_prob.item()
+	fake_images = [seperated_generator_models[i](seed) for i in range(10)]
+	pos_probs = [discriminator_model(fake_images[i]) for i in range(10)]
+	fake_images = [tensor2base64(fake_images[i]) for i in range(10)]
+	pos_probs = [pos_probs[i].item() for i in range(10)]
 	return JsonResponse({
-		'fake_image': fake_image,
-		'pos_prob': pos_prob,
+		'fake_images': fake_images,
+		'pos_probs': pos_probs,
 	})
 
 
@@ -94,13 +103,13 @@ def tensor2base64(tensor):
 
 
 def index(request):
-	context = {'hello': "Hello, Django!"}
+	context = {'hello': "Hello, Django!" + datetime.now().strftime('%Y-%m-%d %H:%M:%S')}
 	return render(request, 'index.html', context)
 
 
-def cnn_html(request):
+def cnn(request):
 	return render(request, 'cnn.html')
 
 
-def gan_html(request):
+def gan(request):
 	return render(request, 'gan.html')
