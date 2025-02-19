@@ -25,7 +25,7 @@ SECRET_KEY = "django-insecure-c0zxv!1x64(_-*ix&df))b9=z(!fiko+ka!tlu=ndrsn=p%3+_
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*',]
 
 
 # Application definition
@@ -68,10 +68,10 @@ TEMPLATES = [
 ]
 
 STATIC_URL = '/static/'
-STATIC_ROOT = BASE_DIR / "static"
-# STATICFILES_DIRS = [
-#     BASE_DIR / "static",
-# ]
+# STATIC_ROOT = BASE_DIR / "static"
+STATICFILES_DIRS = [
+    BASE_DIR / "static",
+]
 
 
 WSGI_APPLICATION = "django_mnist.wsgi.application"
